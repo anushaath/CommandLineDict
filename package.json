@@ -1,0 +1,31 @@
+{
+  "name": "commandlinedict",
+  "version": "1.0.0",
+  "description": "Dictonary through command line",
+  "main": "bin/index.js",
+  "bin": {
+    "hello": "./bin/index.js",
+    "defn": "./bin/defn.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anushaath/CommandLineDict.git"
+  },
+  "keywords": [
+    "node"
+  ],
+  "author": "Anushaath",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anushaath/CommandLineDict/issues"
+  },
+  "homepage": "https://github.com/anushaath/CommandLineDict#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "request": "^2.81.0",
+    "yargs": "^15.1.0"
+  }
+}
