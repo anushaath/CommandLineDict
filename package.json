@@ -2,10 +2,10 @@
   "name": "commandlinedict",
   "version": "1.0.0",
   "description": "Dictonary through command line",
-  "main": "bin/index.js",
+  "main": "bin/dict.js",
   "bin": {
     "hello": "./bin/index.js",
-    "defn": "./bin/defn.js"
+    "dict": "./bin/dict.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

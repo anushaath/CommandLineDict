@@ -8,59 +8,93 @@ if(typeof myArgs[0] != 'undefined')
 {
     switch(myArgs[0]){
         case('defn'):
-            defn = defnFunction(myArgs[1]);
-            defnDisplay(defn);
+            defnFunction(myArgs[1]).then(res=>{
+                defnDisplay(res); 
+            })
+            
             break
         case('syn'):
-            syn = synFunction(myArgs[1]);
-            synDisplay(syn);
+            synFunction(myArgs[1]).then(res=>{
+                synDisplay(res);
+            })
             break
         case('ant'):
-            ant = antFunction(myArgs[1]);
-            antDisplay(ant);
+            antFunction(myArgs[1]).then(res=>{
+            antDisplay(res);
+            });
             break
         case('ex'):
-            ex = exampleFunction(myArgs[1]);
-            exampleDisplay(ex);
+            exampleFunction(myArgs[1]).then(res=>{
+                exampleDisplay(res);
+            });
             break
         case('play'):
             consoleDisplay(defn,"play");
             break
         default:
             // Full Dictionary
-            word = randomFunction();
-            defn = defnFunction(word);
-            defnDisplay(defn);
-            syn = synFunction(myArgs[1]);
-            synDisplay(syn);
-            ant = antFunction(myArgs[1]);
-            antDisplay(ant);
-            ex = exampleFunction(myArgs[1]);
-            exampleDisplay(ex);
+            word = myArgs[0];
+            defnFunction(word).then(res=>{
+            defnDisplay(res);
+            }).then(
+                synFunction(myArgs[0]).then(res=>{
+            synDisplay(res);
+                }).then(
+                    antFunction(myArgs[0]).then(res=>{
+            antDisplay(res);
+                    }).then(
+                        exampleFunction(myArgs[0]).then(res=>{
+            exampleDisplay(res);
+                        }))))
+                    
             break
         }
     }
 else{
     // Word of the Day
-    
+    randomFunction().then(word=>{
+        console.log(chalk.bold.underline.bgGreen("WORD OF THE DAY"))
+        console.log(word);        
+        defnFunction(word).then(res=>{
+        defnDisplay(res);
+            }).then(
+                synFunction(word).then(res=>{
+            synDisplay(res);
+                }).then(
+                    antFunction(word).then(res=>{
+            antDisplay(res);
+                    }).then(
+                        exampleFunction(word).then(res=>{
+            exampleDisplay(res);
+                        }))))
+    })
 }
 
 // Display Functions
 
 function defnDisplay(item) {
-    item.forEach(elements => {
-            console.log(elements.text);
+    console.log(chalk.bold.bgRed("DEFINITION"));    
+    it = JSON.parse(item)
+    it.forEach(elements => {
+            console.log(elements.text)
     });
+
 }
 function exampleDisplay(item) {
-    item.forEach(elements => {
-            elements.examples.forEach(example => {
-                console.log(example.text);
-            });
+    console.log(chalk.bold.bgRed("EXAMPLE"));
+    it = JSON.parse(item)
+    //console.log(it)
+
+    it.examples.forEach(elements => {
+                console.log(elements.text);
     });
 }
 function synDisplay(item) {
-    item.forEach(elements => {
+    console.log(chalk.bold.bgRed("SYNONYMS"));
+    
+    it = JSON.parse(item)
+    //console.log(it)
+    it.forEach(elements => {
             if(elements.relationshipType == "synonym")
             {
                 elements.words.forEach(element => {
@@ -70,7 +104,11 @@ function synDisplay(item) {
     });
 }
 function antDisplay(item) {
-    item.forEach(elements => {
+    console.log(chalk.bold.bgRed("ANTONYMS"));
+    it = JSON.parse(item)    
+    //console.log(it)
+
+    it.forEach(elements => {
         if(elements.relationshipType == "antonym")
         {
             elements.words.forEach(element => {
@@ -83,33 +121,44 @@ function antDisplay(item) {
 // Service Functions
 
 function defnFunction(word) {
-    request(`${base.apihost}` + 'word/' + `${word}` + '/definitions?api_key=' + `${api_key}`, function (_err, _res, body) {
-        console.log(body);
-        return body
-    });
+    return new Promise(resolve =>request(`${base.apihost}` + 'word/' + `${word}` + '/definitions?api_key=' + `${base.api_key}`, function (_err, _res, body) {
+        setTimeout(() => {
+            resolve(body);
+          }, 500);
+    })
+    );
 }
 function synFunction(word) {
-    request(`${base.apihost}`+'word/' + `${word}` + 'relatedWords?api_key='+`${base.api_key}`,(_err,_res, body)=>{
-        console.log(body);
-        return body
-    });
+    return new Promise(resolve =>request(`${base.apihost}`+'word/' + `${word}` + '/relatedWords?api_key='+`${base.api_key}`,(_err,_res, body)=>{
+        setTimeout(() => {
+            resolve(body);
+          }, 1000);
+    })
+    );
 }
 function exampleFunction(word) {
-    request(`${base.apihost}` + 'word/' + `${word}` + '/examples?api_key=' + `${api_key}`,(_err,_res, body)=>{
-        console.log(body);
-        return body
-    });
+    return new Promise(resolve =>request(`${base.apihost}` + 'word/' + `${word}` + '/examples?api_key=' + `${base.api_key}`,(_err,_res, body)=>{
+        setTimeout(() => {
+            resolve(body);
+          }, 2000);
+    })
+    );
 }
 function randomFunction() {
-    request(`${base.apihost}`+'words/randomWord?api_key='+`${base.api_key}`,(_err,_res, body)=>{
-        console.log(body);
-        return body.word;
-    });
+    return new Promise(resolve =>request(`${base.apihost}`+'words/randomWord?api_key='+`${base.api_key}`,(_err,_res, body)=>{
+        b = JSON.parse(body)
+        setTimeout(() => {
+            resolve(b.word);
+          }, 0);
+    })
+    );
 }
 function antFunction(word) {
-    request(`${base.apihost}`+'word/' + `${word}` + 'relatedWords?api_key='+`${base.api_key}`,(_err,_res, body)=>{
-        console.log(body);
-        return body
-    });
+    return new Promise(resolve =>request(`${base.apihost}`+'word/' + `${word}` + '/relatedWords?api_key='+`${base.api_key}`,(_err,_res, body)=>{
+        setTimeout(() => {
+            resolve(body);
+          }, 1500);
+    })
+    );
 }
 

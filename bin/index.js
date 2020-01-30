@@ -9,10 +9,10 @@ const api_key="b972c7ca44dda72a5b482052b1f5e13470e01477f3fb97c85d5313b3c11262707
 exports.apihost = apihost;
 exports.api_key = api_key;
 
-const options = yargs
- .usage("Usage: -n <name>")
- .option("n", { alias: "name", describe: "Your name", type: "string", demandOption: true })
- .argv;
+// const options = yargs
+//  .usage("Usage: -n <name>")
+//  .option("n", { alias: "name", describe: "Your name", type: "string", demandOption: true })
+//  .argv;
 
-const greeting = `Hello, ${options.name}!`;
-console.log(greeting)
+// const greeting = `Hello, ${options.name}!`;
+// console.log(greeting)
