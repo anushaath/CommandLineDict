@@ -11,7 +11,6 @@ if(typeof myArgs[0] != 'undefined')
             defnFunction(myArgs[1]).then(res=>{
                 defnDisplay(res); 
             })
-            
             break
         case('syn'):
             synFunction(myArgs[1]).then(res=>{
@@ -29,23 +28,12 @@ if(typeof myArgs[0] != 'undefined')
             });
             break
         case('play'):
-            consoleDisplay(defn,"play");
+            gamePlay();
             break
         default:
             // Full Dictionary
             word = myArgs[0];
-            defnFunction(word).then(res=>{
-            defnDisplay(res);
-            }).then(
-                synFunction(myArgs[0]).then(res=>{
-            synDisplay(res);
-                }).then(
-                    antFunction(myArgs[0]).then(res=>{
-            antDisplay(res);
-                    }).then(
-                        exampleFunction(myArgs[0]).then(res=>{
-            exampleDisplay(res);
-                        }))))
+            fullDict(word);
                     
             break
         }
@@ -70,12 +58,29 @@ else{
     })
 }
 
+function fullDict(word) {
+    defnFunction(word).then(res => {
+        defnDisplay(res);
+    }).then(synFunction(myArgs[0]).then(res => {
+        synDisplay(res);
+    }).then(antFunction(myArgs[0]).then(res => {
+        antDisplay(res);
+    }).then(exampleFunction(myArgs[0]).then(res => {
+        exampleDisplay(res);
+    }))));
+}
+
+// Game Play Logic
+function gamePlay(){
+    
+}
 // Display Functions
 
 function defnDisplay(item) {
     console.log(chalk.bold.bgRed("DEFINITION"));    
     it = JSON.parse(item)
     it.forEach(elements => {
+            console.log("")
             console.log(elements.text)
     });
 
@@ -86,6 +91,7 @@ function exampleDisplay(item) {
     //console.log(it)
 
     it.examples.forEach(elements => {
+        console.log("")
                 console.log(elements.text);
     });
 }
@@ -98,6 +104,7 @@ function synDisplay(item) {
             if(elements.relationshipType == "synonym")
             {
                 elements.words.forEach(element => {
+                    console.log("")
                     console.log(element);
                 });
             }
@@ -112,6 +119,7 @@ function antDisplay(item) {
         if(elements.relationshipType == "antonym")
         {
             elements.words.forEach(element => {
+                console.log("")
                 console.log(element);
             });
         }
