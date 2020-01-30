@@ -1,68 +1,86 @@
 #!/usr/bin/env node
 const base = require('./index')
-
+const chalk = require("chalk");
 const request = require("request");
 var myArgs = process.argv.slice(2);
 
-if(myArgs[0] in ["defn","syn","ant","ex","play"])
+if(typeof myArgs[0] != 'undefined')
 {
     switch(myArgs[0]){
         case('defn'):
             defn = defnFunction(myArgs[1]);
-            consoleDisplay(defn,"defn");
+            defnDisplay(defn);
             break
         case('syn'):
             syn = synFunction(myArgs[1]);
-            consoleDisplay(syn,"syn");
+            synDisplay(syn);
             break
         case('ant'):
             ant = antFunction(myArgs[1]);
-            consoleDisplay(defn,"ant");
+            antDisplay(ant);
             break
         case('ex'):
             ex = exampleFunction(myArgs[1]);
-            consoleDisplay(defn,"ex");
+            exampleDisplay(ex);
             break
         case('play'):
             consoleDisplay(defn,"play");
             break
         default:
+            // Full Dictionary
+            word = randomFunction();
+            defn = defnFunction(word);
+            defnDisplay(defn);
+            syn = synFunction(myArgs[1]);
+            synDisplay(syn);
+            ant = antFunction(myArgs[1]);
+            antDisplay(ant);
+            ex = exampleFunction(myArgs[1]);
+            exampleDisplay(ex);
             break
         }
     }
 else{
-    // Full Dictionary
-    word = randomFunction();
-    defn = defnFunction(word);
-    consoleDisplay(defn,"defn");
-    syn = synFunction(myArgs[1]);
-    consoleDisplay(syn,"syn");
-    ant = antFunction(myArgs[1]);
-    consoleDisplay(defn,"ant");
-    ex = exampleFunction(myArgs[1]);
-    consoleDisplay(defn,"ex");
+    // Word of the Day
+    
 }
 
-function consoleDisplay(item, fun) {
+// Display Functions
+
+function defnDisplay(item) {
     item.forEach(elements => {
-        if(fun=="defn")
-        {
             console.log(elements.text);
-        }
-        else if (fun=="syn")
+    });
+}
+function exampleDisplay(item) {
+    item.forEach(elements => {
+            elements.examples.forEach(example => {
+                console.log(example.text);
+            });
+    });
+}
+function synDisplay(item) {
+    item.forEach(elements => {
+            if(elements.relationshipType == "synonym")
+            {
+                elements.words.forEach(element => {
+                    console.log(element);
+                });
+            }
+    });
+}
+function antDisplay(item) {
+    item.forEach(elements => {
+        if(elements.relationshipType == "antonym")
         {
-            if()
-        }
-        else if (fun=="ant")
-        {
-
-        }
-        else if (fun=="ex")
-        {
-
+            elements.words.forEach(element => {
+                console.log(element);
+            });
         }
     });
 }
+
+// Service Functions
 
 function defnFunction(word) {
     request(`${base.apihost}` + 'word/' + `${word}` + '/definitions?api_key=' + `${api_key}`, function (_err, _res, body) {
