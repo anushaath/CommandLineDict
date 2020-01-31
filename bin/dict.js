@@ -2,6 +2,8 @@
 const base = require('./index')
 const chalk = require("chalk");
 const request = require("request");
+const inquire = require('inquirer');
+const figlet = require("figlet");
 var myArgs = process.argv.slice(2);
 
 if(typeof myArgs[0] != 'undefined')
@@ -72,7 +74,47 @@ function fullDict(word) {
 
 // Game Play Logic
 function gamePlay(){
-    
+    console.log(chalk.yellow(
+              figlet.textSync('Word Game', { horizontalLayout: 'full' })
+            )
+          );
+    console.log(chalk.cyan.inverse.bold("Welcome to the Game!"))
+    console.log(chalk.yellow("In this game, you will need to guess the word, from the given clues."+chalk.bold(" WE BEGIN!")));
+    randomFunction().then(word=>{
+        defnFunction(word).then(defn=>{
+            def = JSON.parse(defn)
+            console.log(chalk.red.underline("DEFINITION"))
+            console.log(def[0].text)
+        }),
+            // }).then(
+            //     // console.log(word);
+            //     synFunction(word).then(syn=>{
+            //         console.log(word);
+            //         synJS = JSON.parse(syn)
+            //         synJS.forEach(elements => {
+            //           if(elements.relationshipType == "synonym")
+            //            {
+            //                 sy = elements.words
+            //             }
+            //             else if (elements.relationshipType == "antonym")
+            //             {
+            //                 ant = elements.words
+            //             }
+
+            //          })
+            //         }).then(
+            //             exampleFunction(word).then(res=>{
+            //                 expl = JSON.parse(res)
+            //                 ex = expl.examples
+            //             }),
+                        setTimeout(()=>{
+                            guess(word)
+                        },1500)
+                    
+        
+        
+
+    })
 }
 // Display Functions
 
@@ -132,7 +174,7 @@ function defnFunction(word) {
     return new Promise(resolve =>request(`${base.apihost}` + 'word/' + `${word}` + '/definitions?api_key=' + `${base.api_key}`, function (_err, _res, body) {
         setTimeout(() => {
             resolve(body);
-          }, 500);
+          }, 100);
     })
     );
 }
@@ -140,7 +182,7 @@ function synFunction(word) {
     return new Promise(resolve =>request(`${base.apihost}`+'word/' + `${word}` + '/relatedWords?api_key='+`${base.api_key}`,(_err,_res, body)=>{
         setTimeout(() => {
             resolve(body);
-          }, 1000);
+          }, 200);
     })
     );
 }
@@ -170,3 +212,99 @@ function antFunction(word) {
     );
 }
 
+// Game Helper functions
+
+function shuffle(s) {
+    var arr = s.split('');           // Convert String to array
+    var n = arr.length;              // Length of the array
+    
+    for(var i=0 ; i<n-1 ; ++i) {
+      var j = Math.floor(Math.random() * n);       // Get random of [0, n-1]
+      
+      var temp = arr[i];             // Swap arr[i] and arr[j]
+      arr[i] = arr[j];
+      arr[j] = temp;
+    }
+    
+    s = arr.join('');                // Convert Array to string
+    return s;                        // Return shuffled string
+  }
+
+function guess(w)
+{
+    inquire
+    .prompt([
+        {
+        type: 'input',
+        name: 'userGuess',
+        message: 'Guess the word!',
+        validate: function( value ) {
+            if (value.length) {
+              return true;
+            } else {
+              return 'Guess the word';
+            }
+          }
+        }
+    ]).then(answers=>{
+        synFunction(w).then(syn=>{
+       
+
+        console.log(syn)
+        syJS = JSON.parse(syn)
+        syJS.forEach(elements => {
+                      if(elements.relationshipType == "synonym")
+                       {
+                            sy = elements.words
+                        }
+                    })
+        if(answers.userGuess == w)
+        {
+            console.log(chalk.green.bold("Wow! You got it right!"))
+            process.exit()
+        }
+        else if(answers.userFuess in sy)
+        {
+            console.log(chalk.yellow.bold("You guess one of the synonyms! Well done!"))
+            console.log(chalk.green("The actual word was "+w))
+            process.exit()
+        }
+        else{
+            console.log(chalk.red("Your answer was incorrect. You have three options"));
+            options(w,sy)
+        }
+             
+    })
+    })
+}
+
+function options(w,sy){
+    inquire.prompt([
+        {
+            type: 'rawlist',
+            name: "opt",
+            message: "Choose your option:",
+            choices: ["Try Again","Give me a Hint", "Quit"]
+        }
+    ]
+    ).then(answers=>{
+        if (answers.opt == "Try Again")
+        {
+            guess(w)
+        }
+        else if (answers.opt == "Give me a Hint")
+        {
+            console.log(chalk.yellow("Here is a hint: A shuffle of the word"))
+            console.log(shuffle(w))
+            // console.log(chalk.yellow("Here is another hint: An example of the word"))
+            // console.group(shuffle(ex[0]))
+            guess(w)
+        }
+        else if (answers.opt == "Quit")
+        {
+            console.log(chalk.bgCyan("The word was: "+w));
+            fullDict(w);
+            
+        }
+    })
+}
