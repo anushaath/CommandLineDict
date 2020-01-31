@@ -11,6 +11,7 @@ git clone https://github.com/anushaath/CommandLineDict.git
 ### Install the package
 
 ``` 
+cd CommandLineDict
 npm install -g .
 ```
 
