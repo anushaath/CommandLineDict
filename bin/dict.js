@@ -63,11 +63,11 @@ else{
 function fullDict(word) {
     defnFunction(word).then(res => {
         defnDisplay(res);
-    }).then(synFunction(myArgs[0]).then(res => {
+    }).then(synFunction(word).then(res => {
         synDisplay(res);
-    }).then(antFunction(myArgs[0]).then(res => {
+    }).then(antFunction(word).then(res => {
         antDisplay(res);
-    }).then(exampleFunction(myArgs[0]).then(res => {
+    }).then(exampleFunction(word).then(res => {
         exampleDisplay(res);
     }))));
 }
@@ -86,28 +86,7 @@ function gamePlay(){
             console.log(chalk.red.underline("DEFINITION"))
             console.log(def[0].text)
         }),
-            // }).then(
-            //     // console.log(word);
-            //     synFunction(word).then(syn=>{
-            //         console.log(word);
-            //         synJS = JSON.parse(syn)
-            //         synJS.forEach(elements => {
-            //           if(elements.relationshipType == "synonym")
-            //            {
-            //                 sy = elements.words
-            //             }
-            //             else if (elements.relationshipType == "antonym")
-            //             {
-            //                 ant = elements.words
-            //             }
-
-            //          })
-            //         }).then(
-            //             exampleFunction(word).then(res=>{
-            //                 expl = JSON.parse(res)
-            //                 ex = expl.examples
-            //             }),
-                        setTimeout(()=>{
+                setTimeout(()=>{
                             guess(word)
                         },1500)
                     
@@ -295,8 +274,8 @@ function options(w,sy){
         {
             console.log(chalk.yellow("Here is a hint: A shuffle of the word"))
             console.log(shuffle(w))
-            // console.log(chalk.yellow("Here is another hint: An example of the word"))
-            // console.group(shuffle(ex[0]))
+            console.log(chalk.yellow("Here is another hint: A synonym of the word"))
+            console.group(sy[0])
             guess(w)
         }
         else if (answers.opt == "Quit")
