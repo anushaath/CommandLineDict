@@ -182,7 +182,7 @@ function synFunction(word) {
     return new Promise(resolve =>request(`${base.apihost}`+'word/' + `${word}` + '/relatedWords?api_key='+`${base.api_key}`,(_err,_res, body)=>{
         setTimeout(() => {
             resolve(body);
-          }, 200);
+          }, 500);
     })
     );
 }
@@ -248,24 +248,23 @@ function guess(w)
         }
     ]).then(answers=>{
         synFunction(w).then(syn=>{
-       
 
-        console.log(syn)
         syJS = JSON.parse(syn)
         syJS.forEach(elements => {
                       if(elements.relationshipType == "synonym")
                        {
                             sy = elements.words
                         }
+                        
                     })
         if(answers.userGuess == w)
         {
             console.log(chalk.green.bold("Wow! You got it right!"))
             process.exit()
         }
-        else if(answers.userFuess in sy)
+        else if(sy.includes(answers.userGuess))
         {
-            console.log(chalk.yellow.bold("You guess one of the synonyms! Well done!"))
+            console.log(chalk.yellow.bold("You guessed one of the synonyms! Well done!"))
             console.log(chalk.green("The actual word was "+w))
             process.exit()
         }
