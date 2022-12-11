@@ -25,7 +25,7 @@
   "homepage": "https://github.com/anushaath/CommandLineDict#readme",
   "dependencies": {
     "chalk": "^2.4.2",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "figlet": "^1.2.4",
     "inquirer": "^7.0.4",
     "request": "^2.81.0",
